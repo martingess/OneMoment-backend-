@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const {createNote, getNote} = require('../controller/noteController');
+const {createNote, getNote, deleteNote} = require('../controller/noteController');
 router.route('/')
   .post(createNote)
 
 router.route('/:token')
-  .delete(getNote)
-
+  .delete(deleteNote)
+  .get(getNote)
 module.exports = router;

@@ -36,7 +36,7 @@ exports.createNote = async (req, res) => {
   }
 }
 
-exports.getNote = async (req, res) => {
+exports.deleteNote = async (req, res) => {
   try {
     //find note
     const token = req.params.token;
@@ -51,7 +51,7 @@ exports.getNote = async (req, res) => {
 
     //decrypt note
     const decryptedText = CryptoJS.AES.decrypt(note.secretData, password).toString(CryptoJS.enc.Utf8);
-    if(CryptoJS.SHA256(decryptedText, password).toString() !== note.textValidationSignature) throw 'Password is incorrect'
+    if (CryptoJS.SHA256(decryptedText, password).toString() !== note.textValidationSignature) throw 'Password is incorrect'
     await note.remove();
     res.json({
       success: true,
@@ -60,6 +60,32 @@ exports.getNote = async (req, res) => {
         message: decryptedText
       }
     })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: err,
+      data: {}
+    })
+  }
+}
+
+exports.getNote = async (req, res) => {
+  try {
+
+    const {
+      id
+    } = MomentToken.decrypt(req.params.token);
+    const note = await Note.findOne({
+      _id: id
+    });
+
+    if(!note) throw 'Note not found';
+
+    res.json({
+      success: true,
+      message: "Note found",
+      data: {}
+    }) 
   } catch (err) {
     res.json({
       success: false,
