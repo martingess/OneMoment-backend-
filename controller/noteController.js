@@ -1,5 +1,4 @@
 const Note = require('../model/noteModel');
-const createString = require('../helpers/createString');
 const CryptoJS = require("crypto-js");
 const MomentToken = require('../utils/momentToken')
 
