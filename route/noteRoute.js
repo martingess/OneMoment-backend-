@@ -5,6 +5,6 @@ router.route('/')
   .post(createNote)
 
 router.route('/:token')
-  .get(getNote)
+  .delete(getNote)
 
 module.exports = router;
