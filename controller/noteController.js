@@ -5,18 +5,22 @@ const MomentToken = require('../utils/momentToken')
 exports.createNote = async (req, res) => {
   try {
     if (!req.body.data) throw 'Data is not specified';
-    const userUnencryptedData = req.body.data;
+    const {
+      data,
+      expirationDate
+    } = req.body;
     const {
       password,
       id
     } = MomentToken.create();
-    const ciphertext = CryptoJS.AES.encrypt(userUnencryptedData, password).toString();
+    const ciphertext = CryptoJS.AES.encrypt(data, password).toString();
     const note = new Note({
-      textValidationSignature: CryptoJS.SHA256(userUnencryptedData, password),
+      textValidationSignature: CryptoJS.SHA256(data, password),
       secretData: ciphertext,
       creationDate: Date.now(),
-      _id: id
+      _id: id,
     });
+    if (expirationDate) note.expirationDate = expirationDate;
     await note.save();
 
     res.json({
@@ -79,13 +83,13 @@ exports.getNote = async (req, res) => {
       _id: id
     });
 
-    if(!note) throw 'Note not found';
+    if (!note) throw 'Note not found';
 
     res.json({
       success: true,
       message: "Note found",
       data: {}
-    }) 
+    })
   } catch (err) {
     res.json({
       success: false,

@@ -16,6 +16,9 @@ const noteSchema = new Schema({
   secretData: {
     required: true,
     type: String
+  },
+  expirationDate: {
+    type: Number
   }
 });
 
